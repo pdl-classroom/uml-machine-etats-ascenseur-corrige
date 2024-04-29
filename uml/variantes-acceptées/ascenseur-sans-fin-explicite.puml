@@ -1,0 +1,22 @@
+@startuml
+[*] -down-> En_fonctionnement
+
+state En_fonctionnement {
+    [*] --> Arrêté_portes_fermées
+    Arrêté_portes_fermées -right-> Arrêté_portes_ouvertes : Bouton Ouverture Portes
+    Arrêté_portes_fermées -right-> Arrêté_portes_ouvertes : Arrivé à l'étage
+    Arrêté_portes_ouvertes --> Arrêté_en_cours_de_fermeture : Timer\n [1 minute sans action et\n bouton ouverture non utilisé]
+    Arrêté_portes_ouvertes --> Arrêté_en_cours_de_fermeture : Demande d'étage
+    Arrêté_en_cours_de_fermeture --> En_déplacement : Portes fermées\n [si étage demandé]
+    Arrêté_en_cours_de_fermeture --> Arrêté_portes_fermées : Portes fermées\n [si pas de demande d'étage]
+    Arrêté_en_cours_de_fermeture --> Arrêté_portes_ouvertes : Bouton Ouverture Portes
+    Arrêté_portes_fermées --> En_déplacement : Demande d'étage
+    En_déplacement --> Arrêté_portes_fermées : Capteur activé\n [étage == destination]
+
+}
+
+En_fonctionnement --down-> Bloqué : Panne
+Bloqué --> En_fonctionnement[H] : Demande d'étage [si réparé]
+Bloqué --> Bloqué : Bouton d'urgence
+
+@enduml
